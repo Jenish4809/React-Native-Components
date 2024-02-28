@@ -5,4 +5,4 @@ import App from "./App";
 import { image } from "./image";
 import Student, { sectionli } from "./sectionlis";
 
-registerRootComponent(Student);
+registerRootComponent(App);
