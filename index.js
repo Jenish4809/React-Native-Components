@@ -7,7 +7,9 @@ import Student, { sectionli } from "./sectionlis";
 import { Responsive, Toggle } from "./toggle";
 import { TouchHigh, toggle } from "./toggleswitch";
 import { Drawer, Indicator, Radio, press } from "./drawer";
-import { DialogBox } from "./dialogbox";
+import { DialogBox, customModal } from "./dialogbox";
 import { Status } from "./status";
+import { AppStack } from "./stack/stacknav";
+import { Navigate } from "./stack practice/navigate";
 
-registerRootComponent(Status);
+registerRootComponent(Navigate);
