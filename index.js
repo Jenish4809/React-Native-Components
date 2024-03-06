@@ -11,5 +11,9 @@ import { DialogBox, customModal } from "./dialogbox";
 import { Status } from "./status";
 import { AppStack } from "./stack/stacknav";
 import { Navigate } from "./stack practice/navigate";
+import { BottomNav, NavigateTab } from "./tabnavigation/bottomtab";
+import { Home } from "./stack/second";
+import DrawerNav, { Drawers } from "./drawer/drawernav";
+import { ApiData } from "./Api/SimpleApi";
 
-registerRootComponent(Navigate);
+registerRootComponent(ApiData);

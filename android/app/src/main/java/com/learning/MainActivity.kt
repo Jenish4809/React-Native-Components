@@ -2,15 +2,20 @@ package com.learning
 
 import android.os.Build
 import android.os.Bundle
-
+import android.os.Bundle;
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-
+import org.devio.rn.splashscreen.SplashScreen;
 import expo.modules.ReactActivityDelegateWrapper
 
 class MainActivity : ReactActivity() {
+ @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);  // here
+        super.onCreate(savedInstanceState);
+    }
   override fun onCreate(savedInstanceState: Bundle?) {
     // Set the theme to AppTheme BEFORE onCreate to support
     // coloring the background, status bar, and navigation bar.

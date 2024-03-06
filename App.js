@@ -151,7 +151,6 @@
 
 import { useEffect, useState } from "react";
 import { View, Text, Button, StatusBar } from "react-native";
-
 export const useEff = () => {
   const [count, setCount] = useState(0);
   const [data, setData] = useState(100);
