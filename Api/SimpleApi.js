@@ -7,16 +7,25 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
+import { Btn } from "./Component";
 
 export const ApiData = () => {
   const [data, setData] = useState([]);
   const GetApiData = async () => {
-    const url = "https://jsonplaceholder.typicode.com/posts";
+    const url = "http://10.0.2.2:3000/users";
     let result = await fetch(url);
     result = await result.json();
     setData(result);
   };
 
+  const deleteApi = async (id) => {
+    const url = "http://10.0.2.2:3000/users";
+    let result = await fetch(`${url}/${id}`, { method: "delete" });
+    result = await result.json();
+    if (result) {
+      GetApiData();
+    }
+  };
   useEffect(() => {
     GetApiData();
   }, []);
@@ -33,15 +42,31 @@ export const ApiData = () => {
               <View style={styles.dataview}>
                 <View>
                   <Text style={styles.datafont}>ID : {item.id}</Text>
-                  <Text style={styles.datafont}>USER ID : {item.userId}</Text>
+                  <Text style={styles.datafont}>USER ID : {item.name}</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      width: "30%",
+                      marginLeft: 40,
+                    }}
+                  >
+                    <Btn
+                      extraStyle={styles.btnsty}
+                      text={"Delete"}
+                      onPress={() => {
+                        deleteApi(item.id);
+                      }}
+                    />
+                    <Btn extraStyle={styles.btnsty} text={"update"} />
+                  </View>
                 </View>
                 <Text style={styles.datatitlefont}>{item.title}</Text>
               </View>
-              {
-                <View style={styles.bodyview}>
-                  <Text style={styles.bodyfont}>{item.body}</Text>
-                </View>
-              }
+
+              <View style={styles.bodyview}>
+                <Text style={styles.bodyfont}>{item.email}</Text>
+              </View>
             </View>
           )}
         />
@@ -73,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
   },
   datafont: {
-    fontSize: 25,
+    fontSize: 20,
     marginHorizontal: 10,
     fontWeight: "bold",
     color: "#fff",
@@ -99,5 +124,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#fff",
     fontWeight: "bold",
+  },
+  btnsty: {
+    margin: 5,
   },
 });

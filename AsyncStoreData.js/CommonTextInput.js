@@ -1,0 +1,114 @@
+import { TextInput, View, Text, StyleSheet } from "react-native";
+import { colors } from "./ComonColor";
+
+export const CommonInput = ({
+  text,
+  extraStyle,
+  title,
+  value,
+  onchange,
+  Colors,
+  ref,
+  LeftIcon,
+  RightIcon,
+  keyboardType,
+  astric,
+  extraastric,
+  max,
+}) => {
+  return (
+    <View>
+      <View style={styles.mainAstricStyle}>
+        {!!title && <Text style={styles.text}>{title}</Text>}
+        {!!astric && <Text style={styles.asterisk}>{astric}</Text>}
+      </View>
+      <View style={styles.view}>
+        {!!LeftIcon && <LeftIcon />}
+        <TextInput
+          ref={ref}
+          placeholder={text || "Name"}
+          placeholderTextColor={Colors || colors.lightgray}
+          style={[styles.input, extraStyle]}
+          value={value}
+          onChangeText={onchange}
+          keyboardType={keyboardType}
+          maxLength={max}
+        />
+        {!!RightIcon && <RightIcon />}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  view: {
+    height: 50,
+    width: "90%",
+    flexDirection: "row",
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingLeft: 20,
+    alignSelf: "center",
+    borderRadius: 25,
+    borderColor: colors.lightgray,
+  },
+  input: {
+    borderColor: colors.lightgray,
+    paddingLeft: 15,
+    fontSize: 20,
+  },
+  text: {
+    color: colors.button,
+    fontSize: 17,
+    marginLeft: 30,
+    margin: 5,
+    fontWeight: "400",
+  },
+  textmain: {
+    height: 40,
+    width: "90%",
+    borderWidth: 1,
+    borderRadius: 20,
+    borderBlockColor: colors.lightgray,
+    justifyContent: "center",
+    paddingLeft: 15,
+    alignSelf: "center",
+  },
+  titletext: {
+    fontSize: 17,
+    color: colors.lightgray,
+    fontWeight: "bold",
+    marginHorizontal: 25,
+    marginBottom: 3,
+  },
+  datacolor: {
+    fontSize: 15,
+    color: colors.lightgray,
+  },
+  maincont: {
+    marginTop: 20,
+  },
+  asterisk: {
+    fontSize: 17,
+    color: colors.error,
+    fontWeight: "bold",
+  },
+  mainAstricStyle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+  },
+});
+
+export const CommonText = ({ text, datauser, extra }) => {
+  return (
+    <View style={styles.maincont}>
+      <Text style={[styles.titletext, extra]}>{text}</Text>
+      <View style={styles.textmain}>
+        <Text style={styles.datacolor}>{datauser}</Text>
+      </View>
+    </View>
+  );
+};

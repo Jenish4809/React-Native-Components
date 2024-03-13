@@ -15,5 +15,15 @@ import { BottomNav, NavigateTab } from "./tabnavigation/bottomtab";
 import { Home } from "./stack/second";
 import DrawerNav, { Drawers } from "./drawer/drawernav";
 import { ApiData } from "./Api/SimpleApi";
+import { Axiosapi } from "./Api/AxiosApi";
+import { Btn } from "./Api/Component";
+import { PracticeApi } from "./Api/PracticeApi";
+import { PostApi } from "./Api/PostApi";
+import { MainScreen } from "./AsyncStoreData.js/MainScreen";
+import { NavigationUser } from "./AsyncStoreData.js/NavigationUser";
+import { GetImage } from "./ImagePicker";
+import { SearchComponent, TextSearch } from "./Api/ApiSearch";
+import ActionSheet from "react-native-actions-sheet";
+import { ActionSheetCreate } from "./ActionSheet";
 
-registerRootComponent(ApiData);
+registerRootComponent(NavigationUser);
