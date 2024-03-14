@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MainScreen } from "./MainScreen";
 import { ShowData } from "./ShowData";
 import { UserData } from "./UserData";
+import { colors } from "./ComonColor";
 
 export const NavigationUser = () => {
   const Stack = createNativeStackNavigator();

@@ -25,5 +25,7 @@ import { GetImage } from "./ImagePicker";
 import { SearchComponent, TextSearch } from "./Api/ApiSearch";
 import ActionSheet from "react-native-actions-sheet";
 import { ActionSheetCreate } from "./ActionSheet";
+import DropdownComponent, { DropDownCreate } from "./DropDown";
+import { UserData } from "./AsyncStoreData.js/UserData";
 
 registerRootComponent(NavigationUser);

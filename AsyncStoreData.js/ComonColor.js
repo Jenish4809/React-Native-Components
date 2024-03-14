@@ -5,6 +5,7 @@ export const colors = {
   fontblack: "#000",
   lightgray: "#808080",
   error: "red",
+  box: "#4682b4",
 };
 
 // export const fontSize = {

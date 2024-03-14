@@ -9,6 +9,7 @@ import {
   StatusBar,
   Image,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Btn } from "../Api/Component";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -16,6 +17,9 @@ import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonInput } from "./CommonTextInput";
 import { colors } from "./ComonColor";
+import { Dropdown } from "react-native-element-dropdown";
+import { data } from "../DropDown";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export const UserData = (props) => {
   const [chooseDate, setChooseDate] = useState("");
@@ -31,10 +35,10 @@ export const UserData = (props) => {
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [cityError, setCityError] = useState("");
-  const [stateError, setStateError] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [pincodeError, setPincodeError] = useState("");
   const [radio, setRadio] = useState(1);
+  const [isFocus, setIsFocus] = useState(false);
 
   const Data = [
     {
@@ -56,11 +60,11 @@ export const UserData = (props) => {
           lastName,
           email,
           city,
-          state,
           chooseDate,
           radio,
           mobile,
           pincode,
+          state,
         })
       );
     } catch (e) {
@@ -71,12 +75,8 @@ export const UserData = (props) => {
   const handleButton = () => {
     if (!name) {
       Alert.alert("Please enter your first name");
-    } else if (!/^[a-zA-Z]+$/.test(name)) {
-      Alert.alert("First Name should contain only letters.");
     } else if (!lastName) {
       Alert.alert("Last name is required.");
-    } else if (name !== lastName && !/^[a-zA-Z]+$/.test(lastName)) {
-      Alert.alert("Both names should be same and contains only letters.");
     } else if (!email) {
       Alert.alert("please Enter Email Id");
     } else if (!mobile || mobile.length < 10) {
@@ -103,7 +103,6 @@ export const UserData = (props) => {
     setLastNameError("");
     setEmailError("");
     setCityError("");
-    setStateError("");
     setMobileError("");
     setPincodeError("");
   };
@@ -130,9 +129,9 @@ export const UserData = (props) => {
     setCity(text);
   };
 
-  const handleState = (text) => {
-    !text ? setStateError("Enter State NAme") : setStateError("");
-    setState(text);
+  const handleState = (item) => {
+    setState(item.state);
+    setIsFocus(false);
   };
   const showDatePicker = () => {
     setDateVisible(true);
@@ -165,134 +164,162 @@ export const UserData = (props) => {
     }
     setPincode(text);
   };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardDisable}>
       <ScrollView style={styles.container}>
-        <StatusBar barStyle={"default"} />
-        <Text style={styles.font}>User Data</Text>
-        <Image
-          source={require("../assets/icons-logos-emojis-user-icon-png-transparent-11563566676e32kbvynug-removebg-preview.png")}
-          style={styles.image}
-        />
+        <KeyboardAvoidingView>
+          <StatusBar barStyle={"default"} />
+          <Text style={styles.font}>User Data</Text>
+          <Image
+            source={require("../assets/icons-logos-emojis-user-icon-png-transparent-11563566676e32kbvynug-removebg-preview.png")}
+            style={styles.image}
+          />
 
-        <View style={styles.overallview}>
-          <CommonInput
-            astric={"*"}
-            text={"Enter Name"}
-            title={"Name"}
-            onchange={handleName}
-            value={name}
-          />
-          {nameError ? (
-            <Text style={styles.errorcolor}>{nameError}</Text>
-          ) : null}
-          <CommonInput
-            text={"Enter Last Name"}
-            title={"Last Name"}
-            onchange={handleLastName}
-            value={lastName}
-          />
-          {lastNameError ? (
-            <Text style={styles.errorcolor}>{lastNameError}</Text>
-          ) : null}
-          <CommonInput
-            text={"Enter Email Id"}
-            title={"Email Id"}
-            onchange={handleEmail}
-            value={email}
-            keyboardType={"email-address"}
-          />
-          {emailError ? (
-            <Text style={styles.errorcolor}>{emailError}</Text>
-          ) : null}
-          <CommonInput
-            astric={"*"}
-            title={"Phone No"}
-            text={"Enter Phone No."}
-            keyboardType={"numeric"}
-            value={mobile}
-            max={10}
-            onchange={handlePhoneNo}
-          />
-          {mobileError ? (
-            <Text style={styles.errorcolor}>{mobileError}</Text>
-          ) : null}
-          <DateTimePickerModal
-            isVisible={dateVisible}
-            mode="date"
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
-          />
-          <View style={styles.genderview}>
-            <Text style={styles.Bdlabeltext}>Birth Date</Text>
-            <Text style={styles.astricsty}>*</Text>
-          </View>
-          <TouchableOpacity onPress={showDatePicker} style={styles.bdate}>
-            <Text style={styles.bdatetext}>
-              {chooseDate ? chooseDate : `Choose Birth Date`}
-            </Text>
-          </TouchableOpacity>
-          <View style={styles.genderview}>
-            <Text style={styles.gender}>Choose Gender</Text>
-            <Text style={styles.astricsty}>*</Text>
-          </View>
-          <View style={styles.radioview}>
-            {Data.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setRadio(item.title);
-                }}
-              >
-                <View style={styles.radiowrap}>
-                  <View style={styles.radio}>
-                    {radio === item.title ? (
-                      <View style={styles.fill}></View>
-                    ) : null}
+          <View style={styles.overallview}>
+            <CommonInput
+              astric={"*"}
+              text={"Enter Name"}
+              title={"Name"}
+              onchange={handleName}
+              value={name}
+            />
+            {nameError ? (
+              <Text style={styles.errorcolor}>{nameError}</Text>
+            ) : null}
+            <CommonInput
+              text={"Enter Last Name"}
+              title={"Last Name"}
+              onchange={handleLastName}
+              value={lastName}
+            />
+            {lastNameError ? (
+              <Text style={styles.errorcolor}>{lastNameError}</Text>
+            ) : null}
+            <CommonInput
+              text={"Enter Email Id"}
+              title={"Email Id"}
+              onchange={handleEmail}
+              value={email}
+              keyboardType={"email-address"}
+            />
+            {emailError ? (
+              <Text style={styles.errorcolor}>{emailError}</Text>
+            ) : null}
+            <CommonInput
+              astric={"*"}
+              title={"Phone No"}
+              text={"Enter Phone No."}
+              keyboardType={"numeric"}
+              value={mobile}
+              max={10}
+              onchange={handlePhoneNo}
+            />
+            {mobileError ? (
+              <Text style={styles.errorcolor}>{mobileError}</Text>
+            ) : null}
+            <DateTimePickerModal
+              isVisible={dateVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
+            <View style={styles.genderview}>
+              <Text style={styles.Bdlabeltext}>Birth Date</Text>
+              <Text style={styles.astricsty}>*</Text>
+            </View>
+            <TouchableOpacity onPress={showDatePicker} style={styles.bdate}>
+              <Text style={styles.bdatetext}>
+                {chooseDate ? chooseDate : `Choose Birth Date`}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.genderview}>
+              <Text style={styles.gender}>Choose Gender</Text>
+              <Text style={styles.astricsty}>*</Text>
+            </View>
+            <View style={styles.radioview}>
+              {Data.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setRadio(item.title);
+                  }}
+                >
+                  <View style={styles.radiowrap}>
+                    <View style={styles.radio}>
+                      {radio === item.title ? (
+                        <View style={styles.fill}></View>
+                      ) : null}
+                    </View>
+                    <TouchableOpacity style={styles.radiotext}>
+                      <Text style={styles.rt}>{item.title}</Text>
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity style={styles.radiotext}>
-                    <Text style={styles.rt}>{item.title}</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            ))}
+                </TouchableOpacity>
+              ))}
+            </View>
+            <CommonInput
+              text={"Enter City"}
+              title={"City"}
+              onchange={handleCity}
+              value={city}
+            />
+            {cityError ? (
+              <Text style={styles.errorcolor}>{cityError}</Text>
+            ) : null}
+            <View style={styles.containerstate}>
+              <Text style={styles.label}>State</Text>
+              <Dropdown
+                style={[
+                  styles.dropdown,
+                  isFocus && { borderColor: colors.button },
+                ]}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={data}
+                search
+                maxHeight={300}
+                minHeight={100}
+                labelField="id"
+                valueField="state"
+                searchField="search"
+                placeholder={"State"}
+                searchPlaceholder="Search"
+                value={state}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                onChange={handleState}
+                renderLeftIcon={() => (
+                  <AntDesign
+                    style={styles.icon}
+                    color={isFocus ? colors.button : colors.lightgray}
+                    name="folderopen"
+                    size={20}
+                  />
+                )}
+              />
+            </View>
+            <CommonInput
+              astric={"*"}
+              title={"Pincode"}
+              text={"Enter Pincode"}
+              keyboardType={"numeric"}
+              max={6}
+              value={pincode}
+              onchange={handlePinCode}
+            />
+            {pincodeError ? (
+              <Text style={styles.errorcolor}>{pincodeError}</Text>
+            ) : null}
+            <Btn
+              text={"SUBMIT"}
+              extraStyle={styles.btnsty}
+              onPress={handleButton}
+            />
           </View>
-          <CommonInput
-            text={"Enter City"}
-            title={"City"}
-            onchange={handleCity}
-            value={city}
-          />
-          {cityError ? (
-            <Text style={styles.errorcolor}>{cityError}</Text>
-          ) : null}
-          <CommonInput
-            text={"Enter State"}
-            title={"State"}
-            onchange={handleState}
-            value={state}
-          />
-          {stateError ? (
-            <Text style={styles.errorcolor}>{stateError}</Text>
-          ) : null}
-          <CommonInput
-            astric={"*"}
-            title={"Pincode"}
-            text={"Enter Pincode"}
-            keyboardType={"numeric"}
-            max={6}
-            value={pincode}
-            onchange={handlePinCode}
-          />
-          {pincodeError ? (
-            <Text style={styles.errorcolor}>{pincodeError}</Text>
-          ) : null}
-          <Btn
-            text={"SUBMIT"}
-            extraStyle={styles.btnsty}
-            onPress={handleButton}
-          />
-        </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </TouchableWithoutFeedback>
   );
@@ -405,5 +432,41 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: colors.error,
     fontWeight: "bold",
+  },
+  containerstate: {
+    backgroundColor: "white",
+    padding: 16,
+  },
+  dropdown: {
+    height: 50,
+    borderColor: colors.lightgray,
+    borderWidth: 1,
+    borderRadius: 30,
+    paddingHorizontal: "5%",
+  },
+  icon: {
+    marginRight: 10,
+  },
+  placeholderStyle: {
+    fontSize: 17,
+  },
+  selectedTextStyle: {
+    fontSize: 17,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 17,
+    backgroundColor: colors.background1,
+    color: colors.lightgray,
+  },
+  label: {
+    fontSize: 15,
+    color: colors.button,
+    marginHorizontal: 15,
+    padding: 2,
   },
 });
