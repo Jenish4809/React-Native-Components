@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  StatusBar,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import { Btn } from "../Api/Component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "./ComonColor";
@@ -93,7 +86,7 @@ const styles = StyleSheet.create({
   },
   innerview: {
     height: "78%",
-    width: "95%",
+    width: "100%",
     backgroundColor: colors.background,
     elevation: 5,
     bottom: 20,
@@ -122,7 +115,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 4, width: 4 },
   },
   datatext: {
-    fontSize: 20,
+    fontSize: 15,
     height: 40,
     flexWrap: "wrap",
     width: "100%",
