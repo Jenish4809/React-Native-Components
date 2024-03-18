@@ -1,21 +1,40 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { Btn } from "../Api/Component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "./ComonColor";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 export const ShowData = (props) => {
-  const [data, setData] = useState("");
+  const [data, setData] = useState([]);
 
   const getUser = async () => {
     try {
-      const userData = JSON.parse(await AsyncStorage.getItem("user_data"));
-      setData(userData);
+      const userData = await AsyncStorage.getItem("NEWUSER");
+      const ArrayData = JSON.parse(userData);
+      setData(ArrayData);
     } catch (err) {
       console.log("err", err);
     }
   };
+  const dataDelete = async (index) => {
+    const tempData = data;
+    const selectData = tempData.filter((item, ind) => {
+      return ind != index;
+    });
+    setData(selectData);
+    await AsyncStorage.setItem("NEWUSER", JSON.stringify(selectData));
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const Press = () => {
     !data ? getUser() : setData("");
@@ -26,28 +45,40 @@ export const ShowData = (props) => {
   const Return = () => {
     props.navigation.navigate("MainScreen");
   };
+
+  const renderData = ({ item, index }) => {
+    return (
+      <View style={styles.mainviewdata}>
+        <Text style={styles.datafont}>ID : {index + 1}</Text>
+        <Text style={styles.datafont}>Name : {item.name}</Text>
+        <Text style={styles.datafont}>Last Name: {item.lastName}</Text>
+        <Text style={styles.datafont}>Email : {item.email}</Text>
+        <Text style={styles.datafont}>Mobile No : {item.mobile}</Text>
+        <Text style={styles.datafont}>Birth Date : {item.choosedate}</Text>
+        <Text style={styles.datafont}>Gender : {item.radio}</Text>
+        <Text style={styles.datafont}>City : {item.city}</Text>
+        <Text style={styles.datafont}>State : {item.state}</Text>
+        <Text style={styles.datafont}>PinCode : {item.pincode}</Text>
+        <TouchableOpacity
+          style={styles.deletesty}
+          onPress={() => {
+            dataDelete(index);
+          }}
+        >
+          <AntDesign name="delete" style={styles.delete} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.main}>
       <StatusBar barStyle={"default"} />
-      <View style={styles.inmain}>
-        <Text style={styles.font}>User's Data</Text>
-        <AntDesign name="plus" style={styles.icon} onPress={onPressForm} />
+      <View style={styles.titleview}>
+        <Text style={styles.titlefont}>User's Data</Text>
+        <AntDesign name="plus" style={styles.plusicon} onPress={onPressForm} />
       </View>
-      <ScrollView style={styles.innerview}>
-        <View style={styles.dataView}>
-          <Text style={styles.datatext}>Name : {data.name}</Text>
-          <Text style={styles.datatext}>Last Name : {data.lastName}</Text>
-          <Text style={styles.datatext}>Email : {data.email}</Text>
-          <Text style={styles.datatext}>Phone No : {data.mobile}</Text>
-          <Text style={styles.datatext}>Gender : {data.radio}</Text>
-          <Text style={styles.datatext}>City : {data.city}</Text>
-          <Text style={styles.datatext}>State : {data.state}</Text>
-          <View style={styles.deleteset}>
-            <Text style={styles.datatext}>Pincode : {data.pincode}</Text>
-            <AntDesign name="delete" size={25} style={styles.delete} />
-          </View>
-        </View>
-      </ScrollView>
+      <FlatList data={data} renderItem={renderData} />
       <View style={styles.btnview}>
         <Btn
           text={data === "" ? "Show Data" : "Hide Data"}
@@ -68,70 +99,65 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background1,
   },
-  font: {
-    fontSize: 25,
-    color: colors.background,
-    fontWeight: "500",
-    marginTop: -10,
-  },
-
-  inmain: {
-    height: "10%",
+  titleview: {
     width: "100%",
     backgroundColor: colors.button,
-    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 20,
+    padding: 15,
+    alignItems: "center",
   },
-  innerview: {
-    height: "78%",
-    width: "100%",
+  titlefont: {
+    fontSize: 25,
+    color: colors.background1,
+  },
+  plusicon: {
+    fontSize: 25,
+    color: colors.background1,
+  },
+  mainviewdata: {
     backgroundColor: colors.background,
-    elevation: 5,
-    bottom: 20,
+    marginVertical: 10,
+    borderRadius: 8,
+    width: "90%",
     alignSelf: "center",
-    borderRadius: 7,
+    elevation: 4,
+    shadowOffset: {
+      width: 6,
+      height: 6,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    gap: 5,
+    padding: 15,
+    backgroundColor: colors.button,
   },
   btnview: {
-    alignItems: "center",
-    paddingVertical: 5,
-    gap: 15,
+    marginVertical: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   btnsty: {
-    width: "70%",
+    width: "40%",
+    marginHorizontal: 20,
   },
-  dataView: {
-    // height: 150,
-    width: "90%",
-    padding: 10,
-    backgroundColor: colors.background1,
-    alignSelf: "center",
-    margin: 10,
-    borderRadius: 10,
-    elevation: 10,
-    shadowColor: "#800080",
-    shadowOpacity: 0.3,
-    shadowOffset: { height: 4, width: 4 },
-  },
-  datatext: {
-    fontSize: 15,
-    height: 40,
-    flexWrap: "wrap",
-    width: "100%",
-    padding: 5,
-  },
-  icon: {
-    fontSize: 30,
-    color: colors.background1,
-    marginBottom: 20,
+  datafont: {
+    fontSize: 16,
+    color: colors.background,
+    fontWeight: "500",
   },
   delete: {
-    alignSelf: "flex-end",
+    color: colors.button,
+    fontSize: 25,
     alignSelf: "center",
   },
-  deleteset: {
-    flexDirection: "row",
-    marginRight: 30,
+  deletesty: {
+    height: 35,
+    width: 35,
+    backgroundColor: colors.background1,
+    justifyContent: "center",
+    marginHorizontal: "50%",
+    borderRadius: 7,
+    elevation: 10,
   },
 });

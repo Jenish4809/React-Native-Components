@@ -24,13 +24,13 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 export const UserData = (props) => {
   const [chooseDate, setChooseDate] = useState("");
   const [dateVisible, setDateVisible] = useState(false);
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [city, setCity] = useState("");
+  const [name, setName] = useState("dhdhd");
+  const [lastName, setLastName] = useState("ededde");
+  const [email, setEmail] = useState("jen@gm.co");
+  const [mobile, setMobile] = useState("4343444544");
+  const [city, setCity] = useState("swhduh");
   const [state, setState] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [pincode, setPincode] = useState("343456");
   const [nameError, setNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -51,25 +51,24 @@ export const UserData = (props) => {
     },
   ];
 
-  const storeData = async () => {
-    try {
-      await AsyncStorage.setItem(
-        "user_data",
-        JSON.stringify({
-          name,
-          lastName,
-          email,
-          city,
-          chooseDate,
-          radio,
-          mobile,
-          pincode,
-          state,
-        })
-      );
-    } catch (e) {
-      console.log(e);
-    }
+  const storing = async () => {
+    const user = {
+      name: name,
+      email: email,
+      chooseDate: chooseDate,
+      lastName: lastName,
+      radio: radio,
+      city: city,
+      pincode: pincode,
+      state: state,
+      mobile: mobile,
+    };
+
+    let data = (await AsyncStorage.getItem("NEWUSER")) || JSON.stringify([]);
+    let add = JSON.parse(data);
+    user.id = data.length + 1;
+    let mix = [...add, user];
+    await AsyncStorage.setItem("NEWUSER", JSON.stringify(mix));
   };
 
   const handleButton = () => {
@@ -93,7 +92,7 @@ export const UserData = (props) => {
   };
 
   const onPressUser = () => {
-    storeData();
+    storing();
     props.navigation.navigate("MainScreen");
   };
 
