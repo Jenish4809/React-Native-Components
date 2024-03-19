@@ -20,11 +20,13 @@ import { colors } from "./ComonColor";
 import { Dropdown } from "react-native-element-dropdown";
 import { data } from "../DropDown";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import moment from "moment/moment";
+import { StartRating } from "./Start";
 
 export const UserData = (props) => {
   const [chooseDate, setChooseDate] = useState("");
   const [dateVisible, setDateVisible] = useState(false);
-  const [name, setName] = useState("dhdhd");
+  const [name, setName] = useState("Kfjfj");
   const [lastName, setLastName] = useState("ededde");
   const [email, setEmail] = useState("jen@gm.co");
   const [mobile, setMobile] = useState("4343444544");
@@ -39,6 +41,7 @@ export const UserData = (props) => {
   const [pincodeError, setPincodeError] = useState("");
   const [radio, setRadio] = useState(1);
   const [isFocus, setIsFocus] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(0);
 
   const Data = [
     {
@@ -53,6 +56,8 @@ export const UserData = (props) => {
 
   const storing = async () => {
     const user = {
+      // date: new Date(),
+      date: moment(new Date()).format("DD/MM/YYYY - HH:mm:ss"),
       name: name,
       email: email,
       chooseDate: chooseDate,
@@ -62,6 +67,7 @@ export const UserData = (props) => {
       pincode: pincode,
       state: state,
       mobile: mobile,
+      rating: selectedRating,
     };
 
     let data = (await AsyncStorage.getItem("NEWUSER")) || JSON.stringify([]);
@@ -164,6 +170,10 @@ export const UserData = (props) => {
     setPincode(text);
   };
 
+  const handleSelectRating = (rating) => {
+    setSelectedRating(rating);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardDisable}>
       <ScrollView style={styles.container}>
@@ -222,6 +232,7 @@ export const UserData = (props) => {
               mode="date"
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
+              maximumDate={new Date()}
             />
             <View style={styles.genderview}>
               <Text style={styles.Bdlabeltext}>Birth Date</Text>
@@ -312,6 +323,7 @@ export const UserData = (props) => {
             {pincodeError ? (
               <Text style={styles.errorcolor}>{pincodeError}</Text>
             ) : null}
+            <StartRating onSelectRating={handleSelectRating} />
             <Btn
               text={"SUBMIT"}
               extraStyle={styles.btnsty}

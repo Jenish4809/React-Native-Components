@@ -14,6 +14,7 @@ export const CommonInput = ({
   keyboardType,
   astric,
   extraastric,
+  extraview,
   max,
 }) => {
   return (
@@ -22,18 +23,20 @@ export const CommonInput = ({
         {!!title && <Text style={styles.text}>{title}</Text>}
         {!!astric && <Text style={styles.asterisk}>{astric}</Text>}
       </View>
-      <View style={styles.view}>
-        {!!LeftIcon && <LeftIcon />}
-        <TextInput
-          ref={ref}
-          placeholder={text || "Name"}
-          placeholderTextColor={Colors || colors.lightgray}
-          style={[styles.input, extraStyle]}
-          value={value}
-          onChangeText={onchange}
-          keyboardType={keyboardType}
-          maxLength={max}
-        />
+      <View style={[styles.view, extraview]}>
+        <View style={styles.outerContainerStyle}>
+          {!!LeftIcon && <LeftIcon />}
+          <TextInput
+            ref={ref}
+            placeholder={text || "Name"}
+            placeholderTextColor={Colors || colors.lightgray}
+            style={[styles.input, extraStyle]}
+            value={value}
+            onChangeText={onchange}
+            keyboardType={keyboardType}
+            maxLength={max}
+          />
+        </View>
         {!!RightIcon && <RightIcon />}
       </View>
     </View>
@@ -47,8 +50,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderWidth: 1,
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 10,
+    justifyContent: "space-between",
     paddingLeft: 20,
     alignSelf: "center",
     borderRadius: 25,
@@ -99,6 +102,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 2,
+  },
+  outerContainerStyle: {
+    flexDirection: "row",
   },
 });
 

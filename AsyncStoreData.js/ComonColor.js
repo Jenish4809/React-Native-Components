@@ -6,6 +6,7 @@ export const colors = {
   lightgray: "#808080",
   error: "red",
   box: "#4682b4",
+  star: "#ffb300",
 };
 
 // export const fontSize = {
