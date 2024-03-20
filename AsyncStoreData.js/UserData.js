@@ -26,7 +26,7 @@ import { StartRating } from "./Start";
 export const UserData = (props) => {
   const [chooseDate, setChooseDate] = useState("");
   const [dateVisible, setDateVisible] = useState(false);
-  const [name, setName] = useState("Kfjfj");
+  const [name, setName] = useState("");
   const [lastName, setLastName] = useState("ededde");
   const [email, setEmail] = useState("jen@gm.co");
   const [mobile, setMobile] = useState("4343444544");
@@ -56,8 +56,7 @@ export const UserData = (props) => {
 
   const storing = async () => {
     const user = {
-      // date: new Date(),
-      date: moment(new Date()).format("DD/MM/YYYY - HH:mm:ss"),
+      date: new Date(),
       name: name,
       email: email,
       chooseDate: chooseDate,

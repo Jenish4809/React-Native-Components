@@ -6,6 +6,8 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
+  Alert,
+  Keyboard,
 } from "react-native";
 import { Btn } from "../Api/Component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,7 +15,9 @@ import { colors } from "./ComonColor";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CommonInput } from "./CommonTextInput";
 import ActionSheet from "react-native-actions-sheet";
-
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import moment from "moment";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 export const ShowData = (props) => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState();
@@ -25,20 +29,47 @@ export const ShowData = (props) => {
   };
 
   const onSearch = (text) => {
-    if (text === "") {
-      setData(oldData);
-    } else {
-      let tempList = data.filter((item) => {
-        return item.name.toLowerCase().indexOf(text.toLowerCase()) > -1;
-      });
-      setData(tempList);
-    }
+    let tempList = data.filter((item) => {
+      return item.name.toLowerCase().indexOf(text.toLowerCase()) > -1;
+    });
+    setData(tempList);
   };
 
   const sortingDate = () => {
     ref.current.hide();
-    const sortedData = data.sort((a, b) => b.date - a.date);
+    const sortedData = [...data].sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
     setData(sortedData);
+  };
+  const sortByName1 = () => {
+    ref.current.hide();
+    let sortName = [...data].sort(
+      (a, b) =>
+        a.name.toLowerCase().charCodeAt(0) - b.name.toLowerCase().charCodeAt(0)
+    );
+    setData(sortName);
+  };
+  const sortByName2 = () => {
+    ref.current.hide();
+    let sortName = [...data].sort(
+      (a, b) =>
+        b.name.toLowerCase().charCodeAt(0) - a.name.toLowerCase().charCodeAt(0)
+    );
+    setData(sortName);
+  };
+  const Reload = () => {
+    setData(oldData);
+  };
+  const rateSort1 = () => {
+    ref.current.hide();
+    let sorting = [...data].sort((a, b) => b.rating - a.rating);
+    setData(sorting);
+  };
+  const rateSort2 = () => {
+    ref.current.hide();
+    let sorting = [...data].sort((a, b) => a.rating - b.rating);
+    setData(sorting);
   };
 
   const getUser = async () => {
@@ -51,11 +82,7 @@ export const ShowData = (props) => {
       console.log("err", err);
     }
   };
-  const rateSort = () => {
-    ref.current.hide();
-    let sorting = [...data].sort((a, b) => b.rating - a.rating);
-    setData(sorting);
-  };
+
   const dataDelete = async (index) => {
     const tempData = data;
     const selectData = tempData.filter((item, ind) => {
@@ -82,7 +109,9 @@ export const ShowData = (props) => {
     return (
       <View style={styles.mainviewdata}>
         <Text style={styles.datafont}>ID : {index + 1}</Text>
-        <Text style={styles.datafont}>Name : {item.date}</Text>
+        <Text style={styles.datafont}>
+          Name : {moment(item.date).format("DD/MM/YYYY - HH:m")}
+        </Text>
         <Text style={styles.datafont}>Name : {item.name}</Text>
         <Text style={styles.datafont}>Last Name: {item.lastName}</Text>
         <Text style={styles.datafont}>Email : {item.email}</Text>
@@ -96,7 +125,22 @@ export const ShowData = (props) => {
         <TouchableOpacity
           style={styles.deletesty}
           onPress={() => {
-            dataDelete(index);
+            Alert.alert(
+              "Are you sure You want to Delete it",
+              "Tap OK to continue",
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => {},
+                },
+                {
+                  text: "OK",
+                  onPress: () => {
+                    dataDelete(index);
+                  },
+                },
+              ]
+            );
           }}
         >
           <AntDesign name="delete" style={styles.delete} />
@@ -104,14 +148,15 @@ export const ShowData = (props) => {
       </View>
     );
   };
-  const Common = () => {
+  const Common = ({ name, sort, onPress1, onPress2 }) => {
     return (
-      <View>
-        <TouchableOpacity style={styles.main12} onPress={rateSort}>
-          <Text style={styles.text12}>Sort By Rating</Text>
+      <View style={styles.sortstyle}>
+        <TouchableOpacity style={styles.main12} onPress={onPress1}>
+          <Text style={styles.text12}>{name}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.main12} onPress={sortingDate}>
-          <Text style={styles.text12}>Sort By Date</Text>
+        <FontAwesome name="exchange" style={styles.exchange} />
+        <TouchableOpacity style={styles.main12} onPress={onPress2}>
+          <Text style={styles.text12}>{sort}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -122,37 +167,87 @@ export const ShowData = (props) => {
       <StatusBar barStyle={"default"} />
       <View style={styles.titleview}>
         <Text style={styles.titlefont}>User's Data</Text>
-        <AntDesign name="plus" style={styles.plusicon} onPress={onPressForm} />
+        <AntDesign
+          name="plus"
+          style={styles.plusicon}
+          onPress={() => {
+            Alert.alert("Sure You Want to add Yourself", "Tap OK to continue", [
+              {
+                text: "Cancel",
+                onPress: () => {},
+              },
+              {
+                text: "OK",
+                onPress: () => {
+                  onPressForm();
+                },
+              },
+            ]);
+          }}
+        />
       </View>
-      <CommonInput
-        value={search}
-        onchange={(txt) => {
-          onSearch(txt);
-          setSearch(txt);
-        }}
-        text={"Search"}
-        extraview={styles.search}
-        LeftIcon={() => (
-          <AntDesign name="search1" size={25} style={styles.icon} />
-        )}
-        RightIcon={() => (
-          <AntDesign
-            name="filter"
-            size={25}
-            style={styles.icon}
-            onPress={onPressSheet}
+      <View style={styles.searchview}>
+        <CommonInput
+          value={search}
+          onchange={(txt) => {
+            onSearch(txt);
+            setSearch(txt);
+          }}
+          text={"Search"}
+          extraview={styles.search}
+          LeftIcon={() => (
+            <AntDesign name="search1" size={25} style={styles.iconsearch} />
+          )}
+          RightIcon={() => (
+            <MaterialIcons
+              name="clear"
+              size={25}
+              style={styles.iconsearch}
+              onPress={() => {
+                setSearch("");
+                setData(oldData);
+                Keyboard.dismiss();
+              }}
+            />
+          )}
+        />
+        <AntDesign
+          name="filter"
+          size={30}
+          style={styles.iconfilter}
+          onPress={onPressSheet}
+        />
+        <ActionSheet ref={ref} containerStyle={styles.container12}>
+          <Common
+            name={"Sort by Decending Name"}
+            sort={"Sort by Acending Name"}
+            onPress1={sortByName2}
+            onPress2={sortByName1}
           />
-        )}
-      />
-      <ActionSheet ref={ref} containerStyle={styles.container12}>
-        <Common />
-      </ActionSheet>
-
+          <Common
+            name={"Sort by Decending Rating"}
+            sort={"Sort by Acending Rating"}
+            onPress1={rateSort1}
+            onPress2={rateSort2}
+          />
+          <Common
+            name={"Sort by Decending Date"}
+            sort={"Sort by Acending Date"}
+            onPress1={sortingDate}
+            onPress2={sortingDate}
+          />
+        </ActionSheet>
+      </View>
       <FlatList data={data} renderItem={renderData} />
       <View style={styles.btnview}>
         <Btn
           text={data === "" ? "Show Data" : "Hide Data"}
           onPress={Press}
+          extraStyle={styles.btnsty}
+        />
+        <Btn
+          text={"Press for reload"}
+          onPress={Reload}
           extraStyle={styles.btnsty}
         />
         <Btn
@@ -208,8 +303,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   btnsty: {
-    width: "40%",
-    marginHorizontal: 20,
+    flex: 1,
+    marginHorizontal: 10,
   },
   datafont: {
     fontSize: 16,
@@ -232,11 +327,16 @@ const styles = StyleSheet.create({
   },
   search: {
     margin: 10,
-    width: "90%",
+    width: "85%",
     borderRadius: 10,
   },
-  icon: {
+  iconsearch: {
     color: colors.lightgray,
+  },
+  iconfilter: {
+    color: colors.lightgray,
+    alignSelf: "center",
+    marginHorizontal: -10,
   },
   main12: {
     justifyContent: "space-evenly",
@@ -245,15 +345,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 24,
-    width: "50%",
+    width: "40%",
+    height: 70,
     margin: 20,
     alignSelf: "center",
   },
   container12: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    padding: 10,
   },
   text12: {
+    fontSize: 15,
+  },
+  sortstyle: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+  exchange: {
     fontSize: 20,
+  },
+  searchview: {
+    flexDirection: "row",
   },
 });

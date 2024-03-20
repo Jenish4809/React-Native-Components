@@ -35,6 +35,7 @@ export const CommonInput = ({
             onChangeText={onchange}
             keyboardType={keyboardType}
             maxLength={max}
+            onClear
           />
         </View>
         {!!RightIcon && <RightIcon />}
