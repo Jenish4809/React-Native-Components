@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MainScreen } from "./MainScreen";
 import { ShowData } from "./ShowData";
 import { UserData } from "./UserData";
-import { colors } from "./ComonColor";
+import { Splash } from "./Splash";
 
 export const NavigationUser = () => {
   const Stack = createNativeStackNavigator();
@@ -14,6 +14,7 @@ export const NavigationUser = () => {
           headerShown: false,
         }}
       >
+        <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="MainScreen" component={MainScreen} />
         <Stack.Screen name="UserData" component={UserData} />
         <Stack.Screen name="ShowData" component={ShowData} />

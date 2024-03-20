@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Keyboard,
+  Image,
 } from "react-native";
 import { Btn } from "../Api/Component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,10 +19,12 @@ import ActionSheet from "react-native-actions-sheet";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import moment from "moment";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Loader } from "./Loader";
 export const ShowData = (props) => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState();
   const [oldData, setOldData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   let ref = useRef(null);
   const onPressSheet = () => {
@@ -35,7 +38,14 @@ export const ShowData = (props) => {
     setData(tempList);
   };
 
-  const sortingDate = () => {
+  const sortingDate2 = () => {
+    ref.current.hide();
+    const sortedData = [...data].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    setData(sortedData);
+  };
+  const sortingDate1 = () => {
     ref.current.hide();
     const sortedData = [...data].sort(
       (a, b) => new Date(a.date) - new Date(b.date)
@@ -74,9 +84,11 @@ export const ShowData = (props) => {
 
   const getUser = async () => {
     try {
+      setIsLoading(true);
       const userData = await AsyncStorage.getItem("NEWUSER");
       const ArrayData = JSON.parse(userData);
       setData(ArrayData);
+      setIsLoading(false);
       setOldData(ArrayData);
     } catch (err) {
       console.log("err", err);
@@ -108,9 +120,12 @@ export const ShowData = (props) => {
   const renderData = ({ item, index }) => {
     return (
       <View style={styles.mainviewdata}>
-        <Text style={styles.datafont}>ID : {index + 1}</Text>
+        <View style={styles.iconimage}>
+          <Image source={{ uri: item.image }} style={styles.icon} />
+          <Text style={styles.datafont}>ID : {index + 1}</Text>
+        </View>
         <Text style={styles.datafont}>
-          Name : {moment(item.date).format("DD/MM/YYYY - HH:m")}
+          Fill Date : {moment(item.date).format("DD/MM/YYYY - HH:m")}
         </Text>
         <Text style={styles.datafont}>Name : {item.name}</Text>
         <Text style={styles.datafont}>Last Name: {item.lastName}</Text>
@@ -233,8 +248,8 @@ export const ShowData = (props) => {
           <Common
             name={"Sort by Decending Date"}
             sort={"Sort by Acending Date"}
-            onPress1={sortingDate}
-            onPress2={sortingDate}
+            onPress1={sortingDate1}
+            onPress2={sortingDate2}
           />
         </ActionSheet>
       </View>
@@ -256,6 +271,8 @@ export const ShowData = (props) => {
           extraStyle={styles.btnsty}
         />
       </View>
+
+      {!!isLoading && <Loader />}
     </View>
   );
 };
@@ -368,5 +385,18 @@ const styles = StyleSheet.create({
   },
   searchview: {
     flexDirection: "row",
+  },
+  iconimage: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    height: 100,
+    width: 100,
+    borderRadius: 100 / 2,
+    shadowOffset: { height: 10, width: 10 },
+    shadowRadius: 20,
+    shadowColor: "black",
+    marginRight: 15,
   },
 });

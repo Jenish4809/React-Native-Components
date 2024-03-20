@@ -27,5 +27,6 @@ import ActionSheet from "react-native-actions-sheet";
 import { ActionSheetCreate } from "./ActionSheet";
 import DropdownComponent, { DropDownCreate } from "./DropDown";
 import { UserData } from "./AsyncStoreData.js/UserData";
+import { Splash } from "./AsyncStoreData.js/Splash";
 
 registerRootComponent(NavigationUser);

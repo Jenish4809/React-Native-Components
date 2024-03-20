@@ -10,6 +10,8 @@ import {
   Image,
   Alert,
   KeyboardAvoidingView,
+  Modal,
+  Button,
 } from "react-native";
 import { Btn } from "../Api/Component";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -20,19 +22,21 @@ import { colors } from "./ComonColor";
 import { Dropdown } from "react-native-element-dropdown";
 import { data } from "../DropDown";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import moment from "moment/moment";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { StartRating } from "./Start";
+import * as ImagePicker from "expo-image-picker";
 
 export const UserData = (props) => {
   const [chooseDate, setChooseDate] = useState("");
   const [dateVisible, setDateVisible] = useState(false);
   const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("ededde");
-  const [email, setEmail] = useState("jen@gm.co");
-  const [mobile, setMobile] = useState("4343444544");
-  const [city, setCity] = useState("swhduh");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [pincode, setPincode] = useState("343456");
+  const [pincode, setPincode] = useState("");
   const [nameError, setNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -42,6 +46,8 @@ export const UserData = (props) => {
   const [radio, setRadio] = useState(1);
   const [isFocus, setIsFocus] = useState(false);
   const [selectedRating, setSelectedRating] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [image, setImage] = useState(null);
 
   const Data = [
     {
@@ -67,6 +73,7 @@ export const UserData = (props) => {
       state: state,
       mobile: mobile,
       rating: selectedRating,
+      image: image,
     };
 
     let data = (await AsyncStorage.getItem("NEWUSER")) || JSON.stringify([]);
@@ -77,7 +84,9 @@ export const UserData = (props) => {
   };
 
   const handleButton = () => {
-    if (!name) {
+    if (!image) {
+      Alert.alert("Select Image");
+    } else if (!name) {
       Alert.alert("Please enter your first name");
     } else if (!lastName) {
       Alert.alert("Last name is required.");
@@ -91,6 +100,8 @@ export const UserData = (props) => {
       Alert.alert("City or State not selected.");
     } else if (!pincode || pincode.length < 6) {
       Alert.alert("Choose Pincode");
+    } else if (!selectedRating) {
+      Alert.alert("Give Your Feedback");
     } else {
       onPressUser();
     }
@@ -173,17 +184,81 @@ export const UserData = (props) => {
     setSelectedRating(rating);
   };
 
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    } catch (err) {
+      alert("Error Uploading Image : " + err);
+    }
+    setOpen(false);
+  };
+
+  const uploadImage = async () => {
+    try {
+      await ImagePicker.requestCameraPermissionsAsync();
+      let result = await ImagePicker.launchCameraAsync({
+        cameraType: ImagePicker.CameraType.front,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    } catch (err) {
+      alert("Error Uploading Image : " + err);
+    }
+    setOpen(false);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardDisable}>
       <ScrollView style={styles.container}>
         <KeyboardAvoidingView>
           <StatusBar barStyle={"default"} />
           <Text style={styles.font}>User Data</Text>
-          <Image
-            source={require("../assets/icons-logos-emojis-user-icon-png-transparent-11563566676e32kbvynug-removebg-preview.png")}
-            style={styles.image}
-          />
-
+          <TouchableOpacity
+            onPress={() => {
+              setOpen(true);
+            }}
+          >
+            <Image
+              source={
+                !image
+                  ? require("../assets/icons-logos-emojis-user-icon-png-transparent-11563566676e32kbvynug-removebg-preview.png")
+                  : { uri: image }
+              }
+              style={styles.image}
+            />
+          </TouchableOpacity>
+          <Modal visible={open} transparent={true} animationType="slide">
+            <View style={styles.centerview}>
+              <View style={styles.innerview}>
+                <Text style={styles.choose}>Choose Photo</Text>
+                <View style={styles.photos}>
+                  <Entypo
+                    name="camera"
+                    style={styles.galleryicon}
+                    onPress={uploadImage}
+                  />
+                  <MaterialIcons
+                    name="add-to-photos"
+                    style={styles.galleryicon}
+                    onPress={pickImage}
+                  />
+                </View>
+                <Button title="Close Dialog" onPress={() => setOpen(false)} />
+              </View>
+            </View>
+          </Modal>
           <View style={styles.overallview}>
             <CommonInput
               astric={"*"}
@@ -351,9 +426,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   image: {
-    height: 60,
-    width: 60,
-    borderRadius: 60 / 2,
+    height: 100,
+    width: 100,
+    borderRadius: 100 / 2,
     resizeMode: "cover",
     alignSelf: "center",
     justifyContent: "center",
@@ -478,5 +553,30 @@ const styles = StyleSheet.create({
     color: colors.button,
     marginHorizontal: 15,
     padding: 2,
+  },
+  centerview: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  innerview: {
+    backgroundColor: "skyblue",
+    padding: 40,
+    borderRadius: 20,
+    shadowColor: "black",
+    elevation: 10,
+  },
+  photos: {
+    flexDirection: "row",
+  },
+  galleryicon: {
+    fontSize: 35,
+    margin: 35,
+  },
+  choose: {
+    fontSize: 20,
+    alignSelf: "center",
+    fontWeight: "600",
   },
 });
