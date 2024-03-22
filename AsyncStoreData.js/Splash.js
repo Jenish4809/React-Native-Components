@@ -5,7 +5,7 @@ export const Splash = (props) => {
   useEffect(() => {
     setTimeout(() => {
       props.navigation.navigate("MainScreen");
-    }, 3000);
+    }, 1000);
   }, []);
   return (
     <Image source={require("../assets/splash1.jpg")} style={styles.image} />

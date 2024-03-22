@@ -16,10 +16,12 @@ import { colors } from "./ComonColor";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CommonInput } from "./CommonTextInput";
 import ActionSheet from "react-native-actions-sheet";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Entypo from "@expo/vector-icons/Entypo";
 import moment from "moment";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Loader } from "./Loader";
+import { CommonStr } from "./commonStr";
+
 export const ShowData = (props) => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState();
@@ -121,8 +123,16 @@ export const ShowData = (props) => {
     return (
       <View style={styles.mainviewdata}>
         <View style={styles.iconimage}>
-          <Image source={{ uri: item.image }} style={styles.icon} />
-          <Text style={styles.datafont}>ID : {index + 1}</Text>
+          {item.image ? (
+            <Image source={{ uri: item.image }} style={styles.icon} />
+          ) : (
+            <Image
+              source={require("../assets/default_icon.png")}
+              style={styles.icon}
+            />
+          )}
+
+          <Text style={styles.datafont}> User : {item.userName} </Text>
         </View>
         <Text style={styles.datafont}>
           Fill Date : {moment(item.date).format("DD/MM/YYYY - HH:m")}
@@ -136,7 +146,13 @@ export const ShowData = (props) => {
         <Text style={styles.datafont}>City : {item.city}</Text>
         <Text style={styles.datafont}>State : {item.state}</Text>
         <Text style={styles.datafont}>PinCode : {item.pincode}</Text>
-        <Text style={styles.datafont}>Ratings : {item.rating}</Text>
+        <View style={styles.starsty}>
+          <Text style={styles.datafont}>Ratings :</Text>
+          <View style={styles.numstar}>
+            <Text style={styles.ratingsty}>{item.rating}</Text>
+            <MaterialIcons name="star" size={25} style={styles.status} />
+          </View>
+        </View>
         <TouchableOpacity
           style={styles.deletesty}
           onPress={() => {
@@ -163,16 +179,19 @@ export const ShowData = (props) => {
       </View>
     );
   };
-  const Common = ({ name, sort, onPress1, onPress2 }) => {
+
+  const Common = ({ name, onPress1, onPress2 }) => {
     return (
-      <View style={styles.sortstyle}>
-        <TouchableOpacity style={styles.main12} onPress={onPress1}>
-          <Text style={styles.text12}>{name}</Text>
-        </TouchableOpacity>
-        <FontAwesome name="exchange" style={styles.exchange} />
-        <TouchableOpacity style={styles.main12} onPress={onPress2}>
-          <Text style={styles.text12}>{sort}</Text>
-        </TouchableOpacity>
+      <View style={styles.sortview2}>
+        <Text style={styles.sorttext}>{name}</Text>
+        <View style={styles.sortview}>
+          <TouchableOpacity onPress={onPress1}>
+            <Entypo name="triangle-up" size={40} style={styles.iconsty} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPress2}>
+            <Entypo name="triangle-down" size={40} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -234,26 +253,29 @@ export const ShowData = (props) => {
         />
         <ActionSheet ref={ref} containerStyle={styles.container12}>
           <Common
-            name={"Sort by Decending Name"}
-            sort={"Sort by Acending Name"}
+            name={CommonStr.sortname}
             onPress1={sortByName2}
             onPress2={sortByName1}
           />
           <Common
-            name={"Sort by Decending Rating"}
-            sort={"Sort by Acending Rating"}
+            name={CommonStr.sortrate}
             onPress1={rateSort1}
             onPress2={rateSort2}
           />
           <Common
-            name={"Sort by Decending Date"}
-            sort={"Sort by Acending Date"}
+            name={CommonStr.sortdate}
             onPress1={sortingDate1}
             onPress2={sortingDate2}
           />
         </ActionSheet>
       </View>
-      <FlatList data={data} renderItem={renderData} />
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => String(index)}
+        renderItem={renderData}
+        refreshing={isLoading}
+        initialNumToRender={2}
+      />
       <View style={styles.btnview}>
         <Btn
           text={data === "" ? "Show Data" : "Hide Data"}
@@ -271,7 +293,6 @@ export const ShowData = (props) => {
           extraStyle={styles.btnsty}
         />
       </View>
-
       {!!isLoading && <Loader />}
     </View>
   );
@@ -327,6 +348,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.background,
     fontWeight: "500",
+    marginRight: 10,
   },
   delete: {
     color: colors.button,
@@ -355,33 +377,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginHorizontal: -10,
   },
-  main12: {
-    justifyContent: "space-evenly",
-    flexDirection: "row",
-    padding: 15,
-    alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 24,
-    width: "40%",
-    height: 70,
-    margin: 20,
-    alignSelf: "center",
-  },
   container12: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 10,
-  },
-  text12: {
-    fontSize: 15,
-  },
-  sortstyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-  exchange: {
-    fontSize: 20,
   },
   searchview: {
     flexDirection: "row",
@@ -398,5 +397,54 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     shadowColor: "black",
     marginRight: 15,
+  },
+  star: {
+    color: colors.star,
+  },
+  starsty: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 5,
+  },
+  ratingsty: {
+    fontSize: 25,
+    color: colors.button,
+  },
+  numstar: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 2,
+    width: 70,
+    backgroundColor: colors.background1,
+    justifyContent: "center",
+    borderRadius: 20,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: colors.lightgray,
+  },
+  status: {
+    color: colors.star,
+  },
+  sortview: {
+    width: "20%",
+    backgroundColor: colors.button,
+    margin: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    alignSelf: "flex-end",
+    borderRadius: 20,
+  },
+  sortview2: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+  iconsty: {
+    color: colors.background,
+  },
+  sorttext: {
+    fontSize: 20,
   },
 });

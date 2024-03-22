@@ -26,6 +26,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { StartRating } from "./Start";
 import * as ImagePicker from "expo-image-picker";
+import { CommonStr } from "./commonStr";
 
 export const UserData = (props) => {
   const [chooseDate, setChooseDate] = useState("");
@@ -48,7 +49,8 @@ export const UserData = (props) => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState(null);
-
+  const [userName, setUserName] = useState("");
+  const [userNameErr, setUserNameErr] = useState("");
   const Data = [
     {
       id: 1,
@@ -62,6 +64,7 @@ export const UserData = (props) => {
 
   const storing = async () => {
     const user = {
+      userName: userName,
       date: new Date(),
       name: name,
       email: email,
@@ -84,24 +87,24 @@ export const UserData = (props) => {
   };
 
   const handleButton = () => {
-    if (!image) {
-      Alert.alert("Select Image");
+    if (!userName) {
+      Alert.alert(CommonStr.useraleart);
     } else if (!name) {
-      Alert.alert("Please enter your first name");
+      Alert.alert(CommonStr.namealeart);
     } else if (!lastName) {
-      Alert.alert("Last name is required.");
+      Alert.alert(CommonStr.lastnamealeart);
     } else if (!email) {
-      Alert.alert("please Enter Email Id");
+      Alert.alert(CommonStr.emailaleart);
     } else if (!mobile || mobile.length < 10) {
-      Alert.alert("Mobile number is mandatory and it must be of length 10");
+      Alert.alert(CommonStr.mobilealeart);
     } else if (!chooseDate) {
-      Alert.alert("Select the date of birth.");
+      Alert.alert(CommonStr.bdatealeart);
     } else if (!city || !state) {
-      Alert.alert("City or State not selected.");
+      Alert.alert(CommonStr.citystatealeart);
     } else if (!pincode || pincode.length < 6) {
-      Alert.alert("Choose Pincode");
+      Alert.alert(CommonStr.pincodealeart);
     } else if (!selectedRating) {
-      Alert.alert("Give Your Feedback");
+      Alert.alert(CommonStr.ratealeart);
     } else {
       onPressUser();
     }
@@ -120,27 +123,37 @@ export const UserData = (props) => {
     setCityError("");
     setMobileError("");
     setPincodeError("");
+    setUserNameErr("");
   };
 
+  const Userid = (text) => {
+    const userReg = /^[0-9A-Za-z]{6,16}$/;
+    if (!text || !userReg.test(text)) {
+      setUserNameErr(CommonStr.usererr);
+    } else {
+      setUserNameErr("");
+    }
+    setUserName(text);
+  };
   const handleName = (text) => {
-    !text ? setNameError("Enter Name") : setNameError("");
+    !text ? setNameError(CommonStr.nameerr) : setNameError("");
     setName(text);
   };
   const handleLastName = (text) => {
-    !text ? setLastNameError("Enter Last NAme") : setLastNameError("");
+    !text ? setLastNameError(CommonStr.lastnameerr) : setLastNameError("");
     setLastName(text);
   };
   const handleEmail = (text) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!text || !emailRegex.test(text)) {
-      setEmailError("Please enter a valid email address");
+      setEmailError(CommonStr.emailerr);
     } else {
       setEmailError("");
     }
     setEmail(text);
   };
   const handleCity = (text) => {
-    !text ? setCityError("Enter City NAme") : setCityError("");
+    !text ? setCityError(CommonStr.cityerr) : setCityError("");
     setCity(text);
   };
 
@@ -164,7 +177,7 @@ export const UserData = (props) => {
 
   const handlePhoneNo = (text) => {
     if (!text || text.length !== 10) {
-      setMobileError("Invalid Phone number and it must be 10 Digits");
+      setMobileError(CommonStr.mobileerr);
     } else {
       setMobileError("");
     }
@@ -173,7 +186,7 @@ export const UserData = (props) => {
 
   const handlePinCode = (text) => {
     if (!text || text.length !== 6) {
-      setPincodeError("Invalid PinCode");
+      setPincodeError(CommonStr.pincodeerr);
     } else {
       setPincodeError("");
     }
@@ -196,7 +209,7 @@ export const UserData = (props) => {
         setImage(result.assets[0].uri);
       }
     } catch (err) {
-      alert("Error Uploading Image : " + err);
+      alert(CommonStr.erruploadimg + err);
     }
     setOpen(false);
   };
@@ -214,7 +227,7 @@ export const UserData = (props) => {
         setImage(result.assets[0].uri);
       }
     } catch (err) {
-      alert("Error Uploading Image : " + err);
+      alert(CommonStr.erruploadimg + err);
     }
     setOpen(false);
   };
@@ -232,9 +245,7 @@ export const UserData = (props) => {
           >
             <Image
               source={
-                !image
-                  ? require("../assets/icons-logos-emojis-user-icon-png-transparent-11563566676e32kbvynug-removebg-preview.png")
-                  : { uri: image }
+                !image ? require("../assets/default_icon.png") : { uri: image }
               }
               style={styles.image}
             />
@@ -255,15 +266,28 @@ export const UserData = (props) => {
                     onPress={pickImage}
                   />
                 </View>
-                <Button title="Close Dialog" onPress={() => setOpen(false)} />
+                <Button
+                  title={CommonStr.closedialog}
+                  onPress={() => setOpen(false)}
+                />
               </View>
             </View>
           </Modal>
           <View style={styles.overallview}>
             <CommonInput
-              astric={"*"}
-              text={"Enter Name"}
-              title={"Name"}
+              astric={CommonStr.astric}
+              title={CommonStr.username}
+              text={CommonStr.textusername}
+              value={userName}
+              onchange={Userid}
+            />
+            {userNameErr ? (
+              <Text style={styles.errorcolor}>{userNameErr}</Text>
+            ) : null}
+            <CommonInput
+              astric={CommonStr.astric}
+              text={CommonStr.textname}
+              title={CommonStr.name}
               onchange={handleName}
               value={name}
             />
@@ -271,8 +295,8 @@ export const UserData = (props) => {
               <Text style={styles.errorcolor}>{nameError}</Text>
             ) : null}
             <CommonInput
-              text={"Enter Last Name"}
-              title={"Last Name"}
+              text={CommonStr.textlastname}
+              title={CommonStr.lastname}
               onchange={handleLastName}
               value={lastName}
             />
@@ -280,8 +304,8 @@ export const UserData = (props) => {
               <Text style={styles.errorcolor}>{lastNameError}</Text>
             ) : null}
             <CommonInput
-              text={"Enter Email Id"}
-              title={"Email Id"}
+              text={CommonStr.textemail}
+              title={CommonStr.mail}
               onchange={handleEmail}
               value={email}
               keyboardType={"email-address"}
@@ -290,9 +314,9 @@ export const UserData = (props) => {
               <Text style={styles.errorcolor}>{emailError}</Text>
             ) : null}
             <CommonInput
-              astric={"*"}
-              title={"Phone No"}
-              text={"Enter Phone No."}
+              astric={CommonStr.astric}
+              title={CommonStr.mobile}
+              text={CommonStr.textmobile}
               keyboardType={"numeric"}
               value={mobile}
               max={10}
@@ -314,7 +338,7 @@ export const UserData = (props) => {
             </View>
             <TouchableOpacity onPress={showDatePicker} style={styles.bdate}>
               <Text style={styles.bdatetext}>
-                {chooseDate ? chooseDate : `Choose Birth Date`}
+                {chooseDate ? chooseDate : CommonStr.birthdate}
               </Text>
             </TouchableOpacity>
             <View style={styles.genderview}>
@@ -343,8 +367,8 @@ export const UserData = (props) => {
               ))}
             </View>
             <CommonInput
-              text={"Enter City"}
-              title={"City"}
+              text={CommonStr.textcity}
+              title={CommonStr.city}
               onchange={handleCity}
               value={city}
             />
@@ -386,9 +410,9 @@ export const UserData = (props) => {
               />
             </View>
             <CommonInput
-              astric={"*"}
-              title={"Pincode"}
-              text={"Enter Pincode"}
+              astric={CommonStr.astric}
+              title={CommonStr.pincode}
+              text={CommonStr.textpincode}
               keyboardType={"numeric"}
               max={6}
               value={pincode}
