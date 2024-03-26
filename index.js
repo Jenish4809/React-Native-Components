@@ -29,5 +29,14 @@ import DropdownComponent, { DropDownCreate } from "./DropDown";
 import { UserData } from "./AsyncStoreData.js/UserData";
 import { Splash } from "./AsyncStoreData.js/Splash";
 import { Swipe } from "./Swipe/swiper";
+import { Main } from "./ComponentsRedux/Main";
+import { Provider } from "react-redux";
+import store from "./ComponentsRedux/Redux/store";
 
-registerRootComponent(NavigationUser);
+const AppRedux = () => (
+  <Provider store={store}>
+    <Main />
+  </Provider>
+);
+
+registerRootComponent(AppRedux);
