@@ -26,6 +26,15 @@ export const Product = (props) => {
       setIsAdded(false);
     }
   }, [cartItems]);
+
+  const CommonBtn = ({ onPress, name }) => {
+    return (
+      <TouchableOpacity style={styles.btnsty} onPress={onPress}>
+        <Text style={styles.btntext}>{name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.border}>
       <Text style={styles.productfont}>{item.name}</Text>
@@ -33,19 +42,12 @@ export const Product = (props) => {
       <Text style={styles.productfont}>{item.color}</Text>
       <Image source={item?.image} style={styles.imagesty} />
       {isAdded ? (
-        <TouchableOpacity
-          style={styles.btnsty}
+        <CommonBtn
+          name={"Remove from cart"}
           onPress={() => handleRemoveCart(item)}
-        >
-          <Text style={styles.btntext}>Remove to Cart</Text>
-        </TouchableOpacity>
+        />
       ) : (
-        <TouchableOpacity
-          style={styles.btnsty}
-          onPress={() => handleAddToCart(item)}
-        >
-          <Text style={styles.btntext}>Add to Cart</Text>
-        </TouchableOpacity>
+        <CommonBtn name={"Add to cart"} onPress={() => handleAddToCart(item)} />
       )}
     </View>
   );
