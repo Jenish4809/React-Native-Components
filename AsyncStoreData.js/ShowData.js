@@ -108,7 +108,45 @@ export const ShowData = (props) => {
   useEffect(() => {
     getUser();
   }, []);
+  const addUser = () => {
+    Alert.alert("Sure You Want to add Yourself", "Tap OK to continue", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          onPressForm();
+        },
+      },
+    ]);
+  };
+  const deleteData = () => {
+    Alert.alert("Are you sure You want to Delete it", "Tap OK to continue", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          dataDelete(index);
+        },
+      },
+    ]);
+  };
 
+  const valueSearch = (txt) => {
+    onSearch(txt);
+    setSearch(txt);
+  };
+
+  const clearSearch = () => {
+    setSearch("");
+    setData(oldData);
+    Keyboard.dismiss();
+  };
   const Press = () => {
     !data ? getUser() : setData("");
   };
@@ -153,27 +191,7 @@ export const ShowData = (props) => {
             <MaterialIcons name="star" size={25} style={styles.status} />
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.deletesty}
-          onPress={() => {
-            Alert.alert(
-              "Are you sure You want to Delete it",
-              "Tap OK to continue",
-              [
-                {
-                  text: "Cancel",
-                  onPress: () => {},
-                },
-                {
-                  text: "OK",
-                  onPress: () => {
-                    dataDelete(index);
-                  },
-                },
-              ]
-            );
-          }}
-        >
+        <TouchableOpacity style={styles.deletesty} onPress={deleteData}>
           <AntDesign name="delete" style={styles.delete} />
         </TouchableOpacity>
       </View>
@@ -201,32 +219,12 @@ export const ShowData = (props) => {
       <StatusBar barStyle={"default"} />
       <View style={styles.titleview}>
         <Text style={styles.titlefont}>User's Data</Text>
-        <AntDesign
-          name="plus"
-          style={styles.plusicon}
-          onPress={() => {
-            Alert.alert("Sure You Want to add Yourself", "Tap OK to continue", [
-              {
-                text: "Cancel",
-                onPress: () => {},
-              },
-              {
-                text: "OK",
-                onPress: () => {
-                  onPressForm();
-                },
-              },
-            ]);
-          }}
-        />
+        <AntDesign name="plus" style={styles.plusicon} onPress={addUser} />
       </View>
       <View style={styles.searchview}>
         <CommonInput
           value={search}
-          onchange={(txt) => {
-            onSearch(txt);
-            setSearch(txt);
-          }}
+          onchange={valueSearch}
           text={"Search"}
           extraview={styles.search}
           LeftIcon={() => (
@@ -237,17 +235,12 @@ export const ShowData = (props) => {
               name="clear"
               size={25}
               style={styles.iconsearch}
-              onPress={() => {
-                setSearch("");
-                setData(oldData);
-                Keyboard.dismiss();
-              }}
+              onPress={clearSearch}
             />
           )}
         />
         <AntDesign
           name="filter"
-          size={30}
           style={styles.iconfilter}
           onPress={onPressSheet}
         />
@@ -376,6 +369,7 @@ const styles = StyleSheet.create({
     color: colors.lightgray,
     alignSelf: "center",
     marginHorizontal: -10,
+    fontSize: 30,
   },
   container12: {
     borderTopLeftRadius: 24,
@@ -426,7 +420,6 @@ const styles = StyleSheet.create({
     color: colors.star,
   },
   sortview: {
-    width: "20%",
     backgroundColor: colors.button,
     margin: 20,
     justifyContent: "center",

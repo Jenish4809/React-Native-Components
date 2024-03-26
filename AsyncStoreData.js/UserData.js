@@ -128,32 +128,32 @@ export const UserData = (props) => {
 
   const Userid = (text) => {
     const userReg = /^[0-9A-Za-z]{6,16}$/;
-    if (!text || !userReg.test(text)) {
-      setUserNameErr(CommonStr.usererr);
+    if (text || userReg.test(text)) {
+      setNameError("");
     } else {
-      setUserNameErr("");
+      setUserNameErr(CommonStr.usererr);
     }
     setUserName(text);
   };
   const handleName = (text) => {
-    !text ? setNameError(CommonStr.nameerr) : setNameError("");
+    text ? setNameError("") : setNameError(CommonStr.nameerr);
     setName(text);
   };
   const handleLastName = (text) => {
-    !text ? setLastNameError(CommonStr.lastnameerr) : setLastNameError("");
+    text ? setLastNameError("") : setLastNameError(CommonStr.lastnameerr);
     setLastName(text);
   };
   const handleEmail = (text) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!text || !emailRegex.test(text)) {
-      setEmailError(CommonStr.emailerr);
-    } else {
+    if (text || emailRegex.test(text)) {
       setEmailError("");
+    } else {
+      setEmailError(CommonStr.emailerr);
     }
     setEmail(text);
   };
   const handleCity = (text) => {
-    !text ? setCityError(CommonStr.cityerr) : setCityError("");
+    text ? setCityError("") : setCityError(CommonStr.cityerr);
     setCity(text);
   };
 
@@ -231,18 +231,16 @@ export const UserData = (props) => {
     }
     setOpen(false);
   };
-
+  const imageOpen = () => {
+    setOpen(true);
+  };
   return (
     <TouchableWithoutFeedback onPress={keyboardDisable}>
       <ScrollView style={styles.container}>
         <KeyboardAvoidingView>
           <StatusBar barStyle={"default"} />
           <Text style={styles.font}>User Data</Text>
-          <TouchableOpacity
-            onPress={() => {
-              setOpen(true);
-            }}
-          >
+          <TouchableOpacity onPress={imageOpen}>
             <Image
               source={
                 !image ? require("../assets/default_icon.png") : { uri: image }
@@ -465,7 +463,6 @@ const styles = StyleSheet.create({
     height: 45,
     borderWidth: 1,
     justifyContent: "center",
-    alignItems: "flex-start",
     borderRadius: 20,
     marginBottom: 20,
     borderColor: colors.lightgray,

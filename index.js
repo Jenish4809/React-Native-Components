@@ -28,5 +28,6 @@ import { ActionSheetCreate } from "./ActionSheet";
 import DropdownComponent, { DropDownCreate } from "./DropDown";
 import { UserData } from "./AsyncStoreData.js/UserData";
 import { Splash } from "./AsyncStoreData.js/Splash";
+import { Swipe } from "./Swipe/swiper";
 
 registerRootComponent(NavigationUser);
