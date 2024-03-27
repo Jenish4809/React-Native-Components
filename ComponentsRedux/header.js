@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     alignSelf: "center",
     fontWeight: "500",
-    fontFamily: "SemiBold",
   },
   btn: {
     width: "35%",

@@ -1,32 +1,24 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Appearance,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "./Redux/action";
 import { useEffect, useState } from "react";
-import { useFonts } from "expo-font";
+// import { useFonts } from "expo-font";
 
 export const Product = (props) => {
   const [isAdded, setIsAdded] = useState(false);
-  const [theme, setTheme] = useState("");
 
-  const [fontsLoaded] = useFonts({
-    Black: require("../assets/fonts/Montserrat-Black.ttf"),
-    Bold: require("../assets/fonts/Montserrat-Bold.ttf"),
-    Italic: require("../assets/fonts/Montserrat-Italic.ttf"),
-    Medium: require("../assets/fonts/Montserrat-Medium.ttf"),
-    Regular: require("../assets/fonts/Montserrat-Regular.ttf"),
-    SemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
-  });
+  // const [fontsLoaded] = useFonts({
+  //   Black: require("../assets/fonts/Montserrat-Black.ttf"),
+  //   Bold: require("../assets/fonts/Montserrat-Bold.ttf"),
+  //   Italic: require("../assets/fonts/Montserrat-Italic.ttf"),
+  //   Medium: require("../assets/fonts/Montserrat-Medium.ttf"),
+  //   Regular: require("../assets/fonts/Montserrat-Regular.ttf"),
+  //   SemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
+  // });
 
-  if (!fontsLoaded) {
-    return undefined;
-  }
+  // if (!fontsLoaded) {
+  //   return undefined;
+  // }
 
   const item = props.item;
   const dispatch = useDispatch();
@@ -93,7 +85,7 @@ const styles = StyleSheet.create({
   },
   productfont: {
     fontSize: 25,
-    fontFamily: "SemiBold",
+    // fontFamily: "SemiBold",
   },
   btnsty: {
     width: "80%",
