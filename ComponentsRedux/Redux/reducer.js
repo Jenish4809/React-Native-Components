@@ -12,7 +12,7 @@ export const reducer = (state = initialState, action) => {
       });
       return [...result];
     case SET_USERDATA:
-      return [...state, action.data];
+      return [action.data.users];
     default:
       return state;
   }
