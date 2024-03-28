@@ -1,8 +1,7 @@
-import { View, StyleSheet, StatusBar, Text } from "react-native";
+import { View, StyleSheet, StatusBar, Text, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserList } from "./Redux/action";
 import { useEffect } from "react";
-import { ScrollView } from "react-native";
 
 export const UserList = () => {
   const dispatch = useDispatch();
