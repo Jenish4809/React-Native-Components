@@ -32,6 +32,7 @@ import { Swipe } from "./Swipe/swiper";
 import { Main } from "./ComponentsRedux/Main";
 import { Provider } from "react-redux";
 import store from "./ComponentsRedux/Redux/store";
+import { PracticeMain } from "./PracticeUi/Navigator";
 
 const AppRedux = () => (
   <Provider store={store}>
@@ -39,4 +40,4 @@ const AppRedux = () => (
   </Provider>
 );
 
-registerRootComponent(AppRedux);
+registerRootComponent(PracticeMain);
